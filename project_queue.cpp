@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-#define FILENAME "projects.pjts"
+#define FILENAME "/home/oleg/.projects/projects.pjts"
 
 
 
