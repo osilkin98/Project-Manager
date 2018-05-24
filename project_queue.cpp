@@ -8,13 +8,13 @@
 
 
 project_manager::project_manager(const std::string& fname) : ofilename(fname) {
-  std::cerr << "loading queue... ";
+  // std::cerr << "loading queue... ";
   load_queue(ofilename);
-  std::cerr << "done\n";
+  // std::cerr << "done\n";
 }
 
 project_manager::project_manager(void) : project_manager(FILENAME) {
-  std::cerr << "exiting from default constructor\n";
+  // std::cerr << "exiting from default constructor\n";
 }
 
 void project_manager::load_queue(const std::string& fname) {
@@ -49,7 +49,9 @@ void project_manager::write_queue(void) {
   output_file.close();
 }
 
-
+const std::string& project_manager::operator[](const size_t i) const {
+  return project_queue.at(i);
+}
 
 void project_manager::remove_from_front(void) {
   project_queue.pop_front();

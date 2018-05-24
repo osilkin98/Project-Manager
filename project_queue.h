@@ -22,6 +22,7 @@ private:
   // void swap_in_queue(const size_t a, const size_t b);
   
 public:
+  const std::string& operator[](const size_t i) const; 
   void insert(std::string& new_project);
   void remove_from_front(void);
   void remove(const size_t index);
