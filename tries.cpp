@@ -136,12 +136,12 @@ void prefix_trie::print(void) const {
 
 const int prefix_trie::retrieve_autocomplete(const std::string& str) const {
   node *iterator = root;
-  for(register size_t i = 0; i < str.size(); ++i) {
+  register size_t i;
+  for(i = 0; i < str.size(); ++i) {
     if(!iterator) {
       std::cerr << "\niterator is simply null; doesn't contain\n";
       return -1; // doesn't contain
     }
-    
     
     while(iterator -> key != tolower(str[i])) { // selects correct sub-tree
       iterator = iterator -> next;
@@ -161,6 +161,7 @@ const int prefix_trie::retrieve_autocomplete(const std::string& str) const {
       }
     }
   }
+  
 }
 
 const int prefix_trie::retrieve(const std::string& str) const {
@@ -230,9 +231,11 @@ int main(void) {
   std::vector<std::string> strings = {"test", "top", "trap", "train"};
   // prefix_trie<std::vector< std::string> > my_tries(strings);
   prefix_trie my_tries;
-  for(int i = 0; i < strings.size(); ++i) {
+  int i;
+  for(i = 0; i < strings.size(); ++i) {
     my_tries.insert(strings[i], i + 1);
   }
+  std::cerr << "i: " << i << " : strings.size() = 4\n";
   std::vector<std::string> tests = {"top", "trap", "test", "TeSt", "tes", "testr", "assert"};
   for(size_t i = 0; i < tests.size(); ++i) {
     if(my_tries.contains(tests[i])) {
