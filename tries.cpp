@@ -11,9 +11,7 @@ prefix_trie::prefix_trie(L<S>& list) {
   insert(list);
 }
 prefix_trie::~prefix_trie(void) {
-  std::cerr << "removing all nodes\n";
   remove_nodes(root);
-  std::cerr << "successfully removed all nodes.\n";
 }
 
 void prefix_trie::remove_nodes(node *to_remove) {
@@ -83,7 +81,6 @@ void prefix_trie::insert(const std::string& str, const int value) {
 	node *temp = traversal -> child;
 	while(temp -> next) { // while there are multiple children
 	  if(temp -> key == '\0') {
-	    std::cerr << "Error: " << str << " already in collection.\n";
 	    return;
 	  }
 	  temp = temp -> next;
@@ -94,15 +91,12 @@ void prefix_trie::insert(const std::string& str, const int value) {
     visited_nodes.push(traversal);
     traversal = traversal -> child;
   }
-  std::cerr << "For the insertion of " << str << ", we have visited:\n";
   int prev_div = 0;
   while(!visited_nodes.empty()) {
     visited_nodes.top() -> div_count = visited_nodes.top() -> next ? visited_nodes.top() -> div_count + 1 : prev_div;
     prev_div = visited_nodes.top() -> div_count;
-    std::cerr << '(' << visited_nodes.top() -> key << ", " << visited_nodes.top() -> div_count << ") ";
     visited_nodes.pop();
   }
-  std::cerr << "\n";
 }
 
 
@@ -135,47 +129,37 @@ void prefix_trie::print(void) const {
   }*/
 
 const int prefix_trie::retrieve_autocomplete(const std::string& str) const {
-  std::cerr << "trying to locate " << str << "\n";
   node *iterator = root;
   register size_t i;
   for(i = 0; i < str.size(); ++i) {
     
     if(!iterator) {
-      std::cerr << "\niterator is simply null; doesn't contain\n";
       return -1; // doesn't contain
     }
     if(iterator -> div_count > 0) {
       while(iterator -> key != tolower(str[i])) { // selects correct sub-tree
 	iterator = iterator -> next;
 	if(!iterator) {
-	  std::cerr << "\ncould not find the correct key\n";
 	  return -1;
 	}
       }
     }
-    std::cerr << "iterator value: " << iterator -> key << "\n";
     
     if(i + 1 == str.size()) { // if at last index
-      std::cerr << "trying to check all the attached nodes for the null terminator... ";
       node *temp = iterator -> child;
       while(temp) {
 	if(temp -> key == '\0') {
-	  std::cerr << "\nfound key \\0 \n";
 	  return temp -> value;
 	}
 	temp = temp -> next;
       }
-      std::cerr << "failed\n";
       break;
     }
     iterator = iterator -> child;
 
   }
   if(iterator) {
-    std::cerr << "iterator has key: " << iterator -> key << "\tlast key: " << str[i] << "\n";
-    std::cerr << "iterator diversion count: " << iterator -> div_count << "\n";
     if((tolower(str[i]) == iterator -> key) && !(iterator -> div_count)) {
-      std::cerr << "for " << str << " we have 0 diversions, attempting to autocomplete.\n";
       while(iterator -> key != '\0') {
 	iterator = iterator -> child;
       }
@@ -183,7 +167,6 @@ const int prefix_trie::retrieve_autocomplete(const std::string& str) const {
     }
     return -1;
   } else {
-    std::cerr << "iterator is invalid\n";
     return -1;
   }
   
@@ -193,7 +176,6 @@ const int prefix_trie::retrieve(const std::string& str) const {
   node *iterator = root;
   for(register size_t i = 0; i < str.size(); ++i) {
     if(!iterator) {
-      std::cerr << "\niterator is simply null; doesn't contain\n";
       return -1; // doesn't contain
     }
     std::cerr << str[i];
@@ -201,7 +183,6 @@ const int prefix_trie::retrieve(const std::string& str) const {
     while(iterator -> key != tolower(str[i])) { // selects correct sub-tree
       iterator = iterator -> next;
       if(!iterator) {
-	std::cerr << "\ncould not find the correct key\n";
 	return -1;
       }
     }
@@ -210,14 +191,12 @@ const int prefix_trie::retrieve(const std::string& str) const {
     if(i + 1 == str.size()) { // if at last index
       while(iterator) {
 	if(iterator -> key == '\0') {
-	  std::cerr << "\nfound key \\0 \n";
 	  return iterator -> value;
 	}
 	iterator = iterator -> next;
       }
     }
   }
-  std::cerr << "\n";
   return -1;
 }
 
@@ -239,6 +218,7 @@ const bool prefix_trie::contains(const std::string& str) const {
   return true;
 }
 
+/* FOR DEBUGGING */ 
 void prefix_trie::print_nodes(node *v) const {
   if(!v) {
     return;
@@ -253,7 +233,8 @@ void prefix_trie::print_nodes(node *v) const {
 }
 
 int main(void) {
-  std::vector<std::string> strings = {"test", "top", "trap", "train"};
+  // std::vector<std::string> strings = {"test", "top", "trap", "train"};
+  std::vector<std::string> strings = {"there", "the", "their"};
   // prefix_trie<std::vector< std::string> > my_tries(strings);
   prefix_trie my_tries;
   int i;
@@ -261,7 +242,8 @@ int main(void) {
     my_tries.insert(strings[i], i + 1);
   }
   std::cerr << "i: " << i << " : strings.size() = 4\n";
-  std::vector<std::string> tests = {"top", "trap", "test", "TeSt", "tes", "testr", "assert"};
+  // std::vector<std::string> tests = {"top", "trap", "test", "TeSt", "tes", "testr", "assert" };
+  std::vector<std::string> tests = {"there", "the", "their" };
   /*for(size_t i = 0; i < tests.size(); ++i) {
     if(my_tries.contains(tests[i])) {
       std::cout << "my_tries contains " << tests[i] << "\n";
