@@ -231,7 +231,7 @@ void prefix_trie::print_nodes(node *v) const {
   print_nodes(v -> child);
   print_nodes(v -> next);
 }
-
+/*
 int main(void) {
   // std::vector<std::string> strings = {"test", "top", "trap", "train"};
   std::vector<std::string> strings = {"there", "the", "their"};
@@ -264,7 +264,7 @@ int main(void) {
   }
    my_tries.insert(tests[2], 5);
   my_tries.print();
-  my_tries.insert(tests[3], 6);*/
+  my_tries.insert(tests[3], 6);*/ /*
   my_tries.print(); 
 
   std::cout << "\n\n";
@@ -274,3 +274,4 @@ int main(void) {
   std::cout << std::endl;
   return 0;
 }
+*/
