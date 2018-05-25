@@ -135,31 +135,56 @@ void prefix_trie::print(void) const {
   }*/
 
 const int prefix_trie::retrieve_autocomplete(const std::string& str) const {
+  std::cerr << "trying to locate " << str << "\n";
   node *iterator = root;
   register size_t i;
   for(i = 0; i < str.size(); ++i) {
+    
     if(!iterator) {
       std::cerr << "\niterator is simply null; doesn't contain\n";
       return -1; // doesn't contain
     }
-    
-    while(iterator -> key != tolower(str[i])) { // selects correct sub-tree
-      iterator = iterator -> next;
-      if(!iterator) {
-	std::cerr << "\ncould not find the correct key\n";
-	return -1;
+    if(iterator -> div_count > 0) {
+      while(iterator -> key != tolower(str[i])) { // selects correct sub-tree
+	iterator = iterator -> next;
+	if(!iterator) {
+	  std::cerr << "\ncould not find the correct key\n";
+	  return -1;
+	}
       }
+    }
+    std::cerr << "iterator value: " << iterator -> key << "\n";
+    
+    if(i + 1 == str.size()) { // if at last index
+      std::cerr << "trying to check all the attached nodes for the null terminator... ";
+      node *temp = iterator -> child;
+      while(temp) {
+	if(temp -> key == '\0') {
+	  std::cerr << "\nfound key \\0 \n";
+	  return temp -> value;
+	}
+	temp = temp -> next;
+      }
+      std::cerr << "failed\n";
+      break;
     }
     iterator = iterator -> child;
-    if(i + 1 == str.size()) { // if at last index
-      while(iterator) {
-	if(iterator -> key == '\0') {
-	  std::cerr << "\nfound key \\0 \n";
-	  return iterator -> value;
-	}
-	iterator = iterator -> next;
+
+  }
+  if(iterator) {
+    std::cerr << "iterator has key: " << iterator -> key << "\tlast key: " << str[i] << "\n";
+    std::cerr << "iterator diversion count: " << iterator -> div_count << "\n";
+    if((tolower(str[i]) == iterator -> key) && !(iterator -> div_count)) {
+      std::cerr << "for " << str << " we have 0 diversions, attempting to autocomplete.\n";
+      while(iterator -> key != '\0') {
+	iterator = iterator -> child;
       }
+      return iterator -> value;
     }
+    return -1;
+  } else {
+    std::cerr << "iterator is invalid\n";
+    return -1;
   }
   
 }
@@ -237,7 +262,7 @@ int main(void) {
   }
   std::cerr << "i: " << i << " : strings.size() = 4\n";
   std::vector<std::string> tests = {"top", "trap", "test", "TeSt", "tes", "testr", "assert"};
-  for(size_t i = 0; i < tests.size(); ++i) {
+  /*for(size_t i = 0; i < tests.size(); ++i) {
     if(my_tries.contains(tests[i])) {
       std::cout << "my_tries contains " << tests[i] << "\n";
     } else {
@@ -246,7 +271,7 @@ int main(void) {
   }
  
   my_tries.print();
-  /* my_tries.insert(std::string("assert"), 4);
+  my_tries.insert(std::string("assert"), 4); 
   my_tries.print();
   for(size_t i = 0; i < tests.size(); ++i) {
     if(my_tries.contains(tests[i])) {
@@ -257,13 +282,13 @@ int main(void) {
   }
    my_tries.insert(tests[2], 5);
   my_tries.print();
-  my_tries.insert(tests[3], 6);
-  my_tries.print();
+  my_tries.insert(tests[3], 6);*/
+  my_tries.print(); 
 
   std::cout << "\n\n";
   for(register size_t i = 0; i < tests.size(); ++i) {
-    std::cout << "value of " << tests[i] << ": "<< my_tries.retrieve(tests[i]) << "\n"; 
+    std::cerr << "value of " << tests[i] << ": "<< my_tries.retrieve_autocomplete(tests[i]) << "\n"; 
   }
-  std::cout << std::endl;*/
+  std::cout << std::endl;
   return 0;
 }
