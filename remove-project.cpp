@@ -1,7 +1,5 @@
-#include "project_queue.h"
-
-
-
+#include "libs/project_queue.h"
+// removing projects
 int main(const int argc, const char **argv) {
   if(argc > 2) { // invalid for now
     std::cerr << "Error: Too many parameters. Did you mean to use quotation marks?\n";
