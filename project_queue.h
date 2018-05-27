@@ -6,6 +6,9 @@
 #include <string>
 #include <deque>
 
+
+
+
 class project_manager {
 private:
   std::deque< std::string > project_queue;
@@ -26,7 +29,8 @@ public:
   const std::string& operator[](const size_t i) const; 
   void insert(std::string& new_project);
   void remove_from_front(void);
-  void remove(const size_t index);
+  bool remove(const int index);
+  bool remove(const std::string& str);
   void print(void) const;
   void clear(void);
 };

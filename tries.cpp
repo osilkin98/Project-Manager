@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <cstdlib>
 
 prefix_trie::prefix_trie(void) : root(NULL) { }
 
@@ -178,7 +179,6 @@ const int prefix_trie::retrieve(const std::string& str) const {
     if(!iterator) {
       return -1; // doesn't contain
     }
-    std::cerr << str[i];
 
     while(iterator -> key != tolower(str[i])) { // selects correct sub-tree
       iterator = iterator -> next;
@@ -231,6 +231,34 @@ void prefix_trie::print_nodes(node *v) const {
   print_nodes(v -> child);
   print_nodes(v -> next);
 }
+
+/* 
+const int remove(const std::string& str) {
+  if(!str.size()) {
+    return -1;
+  }
+  std::stack<node *> to_delete;
+  node *iterator = root;
+  for(register size_t i = 0; i < str.size(); ++i) {
+    if(!iterator) {
+      return -1;
+    }
+    while(iterator -> key != tolower(str[i])) { // to select correct node
+      iterator = iterator -> next;
+      if(!iterator) {
+	return false;
+      }
+    }
+    if(iterator -> div_count == 0) {
+      to_delete.push(iterator);
+    }
+    iterator = iterator -> child;
+  }
+  
+}
+*/
+
+
 /*
 int main(void) {
   // std::vector<std::string> strings = {"test", "top", "trap", "train"};
@@ -242,7 +270,8 @@ int main(void) {
     my_tries.insert(strings[i], i + 1);
   }
   std::cerr << "i: " << i << " : strings.size() = 4\n";
-  // std::vector<std::string> tests = {"top", "trap", "test", "TeSt", "tes", "testr", "assert" };
+  // std::vector<std::string> tests = {"top", "trap", "test", "TeSt", "tes", "testr", 
+"assert" };
   std::vector<std::string> tests = {"there", "the", "their" };
   /*for(size_t i = 0; i < tests.size(); ++i) {
     if(my_tries.contains(tests[i])) {
@@ -271,6 +300,11 @@ int main(void) {
   for(register size_t i = 0; i < tests.size(); ++i) {
     std::cerr << "value of " << tests[i] << ": "<< my_tries.retrieve_autocomplete(tests[i]) << "\n"; 
   }
+  srand(time(0));
+  size_t ind = rand() % tests.size();
+  
+  std::cerr << "retrieving: " << tests[ind] << ": " << my_tries.retrieve (tests[ind]) << "\n";
+  my_tries.print();
   std::cout << std::endl;
   return 0;
 }

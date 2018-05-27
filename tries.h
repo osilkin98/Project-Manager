@@ -23,7 +23,7 @@ public:
 
   ~prefix_trie(void);
   
-  // const int remove(const std::string& str);
+  const int remove(const std::string& str);
 
   template <typename S, template <typename S> typename L>
   void insert(L<S>& list);

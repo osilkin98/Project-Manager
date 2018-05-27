@@ -1,11 +1,12 @@
 #include "project_queue.h"
+#include "tries.h"
 #include <iostream>
 #include <fstream>
 
+
 #define FILENAME "/home/oleg/.projects/projects.pjts"
 
-
-
+#define MAX_PROJECTS 99
 
 project_manager::project_manager(const std::string& fname) : ofilename(fname) {
   // std::cerr << "loading queue... ";
@@ -58,13 +59,38 @@ void project_manager::remove_from_front(void) {
 }
 
 void project_manager::insert(std::string& new_project) {
+  if(project_queue.size() == MAX_PROJECTS) {
+    std::cerr << "Error: Cannot insert new project; queue is full\n";
+    return;
+  }
   project_queue.push_back(new_project);
 }
 
-void project_manager::remove(const size_t index) {
+bool project_manager::remove(const std::string& str) {
+  prefix_trie tries;
+  for(register int i = 0; i < project_queue.size(); ++i) {
+    tries.insert(project_queue[i], i);
+  }
+  const int index = tries.retrieve(str);
+  if(index == -1) {
+    for(register size_t i = 0; i < str.size(); ++i) {
+      if(isalpha(str[i])) {
+	return false;
+      }
+    }
+    return remove(std::stoi(str));
+  } else {
+    project_queue.erase(project_queue.begin() + index);
+    return true;
+  }
+}
+
+bool project_manager::remove(const int index) {
   if(index > 0 && index <= project_queue.size()) {
     project_queue.erase(project_queue.begin() + (index - 1));
+    return true;
   }
+  return false;
 }
 
 void project_manager::print(void) const {
