@@ -76,7 +76,7 @@ void project_manager::remove_from_front(void) {
   project_queue.pop_front();
 }
 
-void project_manager::insert(std::string& new_project) {
+void project_manager::insert(std::string path, std::string& new_project) {
   if(project_queue.size() == MAX_PROJECTS) {
     std::cerr << "Error: Cannot insert new project; queue is full\n";
     return;
