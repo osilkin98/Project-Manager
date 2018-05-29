@@ -102,5 +102,5 @@ void project_manager::print(void) const {
 
 void project_manager::clear(void) {
   project_queue.clear();
-  std::cerr << "cleared the queue\n";
+  // std::cerr << "cleared the queue\n";
 }
