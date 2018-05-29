@@ -22,9 +22,27 @@ void project_manager::load_queue(const std::string& fname) {
   std::ifstream input_file(fname);
   std::string input_string;
   if(input_file.is_open()) {
-    while( std::getline(input_file, input_string) ) {
+    std::string title_holder, path_holder;
+    size_t a, b;
+    std::ifstream file_tracker;
+    while( std::getline(input_file, path_holder) ) {
       // to ensure that we don't place the newline character into the queue
-      project_queue.push_back(input_string.substr(0, input_string.size()));
+      // project_queue.push_back(input_string.substr(0, input_string.size()));
+
+      file_tracker.open(path_holder);
+      if(file_tracker.is_open()) {
+	std::getline(file_tracker, title_holder);
+	a = title_holder.find_first_of('[');
+	b = title_holder.find_last_of(']');
+	if(a == std::string::npos || b == std::string::npos) { // improperly formatted file
+	  std::cerr << "Error: Imporperly formatted file '"<< path_holder << "', skipping\n";
+	  file_tracker.close();
+	  continue;
+	} else { // otherwise it works fine 
+	  project_queue.push_back(project(path_holder, title_holder.substr(a + 1, (b - a) - 1)));
+	}
+      }
+      file_tracker.close();
     }
   } else {
     std::cerr << "file could not open\n";
@@ -43,7 +61,7 @@ void project_manager::write_queue(void) {
   // while the queue is non-empty
   if(output_file.is_open()) {
     while(project_queue.size()) {
-      output_file << project_queue.front() << '\n';
+      output_file << project_queue.front().location << '\n';
       project_queue.pop_front();
     }
   }
@@ -51,25 +69,25 @@ void project_manager::write_queue(void) {
 }
 
 const std::string& project_manager::operator[](const size_t i) const {
-  return project_queue.at(i);
+  return project_queue.at(i).title;
 }
 
 void project_manager::remove_from_front(void) {
   project_queue.pop_front();
 }
 
-void project_manager::insert(std::string& new_project) {
+void project_manager::insert(std::string path, std::string& new_project) {
   if(project_queue.size() == MAX_PROJECTS) {
     std::cerr << "Error: Cannot insert new project; queue is full\n";
     return;
   }
-  project_queue.push_back(new_project);
+  project_queue.push_back(project("", new_project));
 }
 
 bool project_manager::remove(const std::string& str) {
   prefix_trie tries;
   for(register int i = 0; i < project_queue.size(); ++i) {
-    tries.insert(project_queue[i], i);
+    tries.insert(project_queue[i].title, i);
   }
   const int index = tries.retrieve(str);
   if(index == -1) {
@@ -95,7 +113,8 @@ bool project_manager::remove(const int index) {
 
 void project_manager::print(void) const {
   for(register size_t i = 0; i < project_queue.size(); ++i) {
-    std::cout << i + 1 << '\t' << project_queue[i] << '\n';
+    //std::cout << i + 1 << '\t' << project_queue[i] << '\n';
+    project_queue[i]();
   }
   std::cout << std::endl;
 }
@@ -103,4 +122,10 @@ void project_manager::print(void) const {
 void project_manager::clear(void) {
   project_queue.clear();
   // std::cerr << "cleared the queue\n";
+}
+
+int main(void) {
+  project_manager my_projects;
+  my_projects.print();
+  return 0;
 }
