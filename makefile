@@ -19,6 +19,8 @@ push: all
 
 all: print-project add-project remove-project
 
+clear-projects: tries.o project_queue.o clear-projects.cpp
+	@$(CC) -o bins/clear-projects clear-projects.cpp bins/project_queue.o bins/tries.o 
 
 print-project: tries.o project_queue.o print-projects.cpp
 	@$(CC) -o bins/print-projects print-projects.cpp bins/project_queue.o bins/tries.o
