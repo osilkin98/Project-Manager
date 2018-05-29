@@ -6,12 +6,17 @@
 #include <string>
 #include <deque>
 
-
+struct project {
+  std::string location, title;
+  void operator()(void) const { std::cout << title << ": " << location << std::endl; }
+  project(const std::string& fpath, const std::string& pname)
+    : location(fpath), title(pname) { }
+};
 
 
 class project_manager {
 private:
-  std::deque< std::string > project_queue;
+  std::deque< project > project_queue; // stores locations of .pjt files
   std::string ofilename;
 public:
   project_manager(void);
